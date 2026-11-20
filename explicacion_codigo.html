@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Guía de código de MomioLab Champions: datos, variables, modelos y ejecución en VS Code.">
+  <title>Cómo se hizo · MomioLab Champions</title>
+  <style>
+    :root { color-scheme: light; --ink:#17323a; --muted:#52656a; --green:#1c6d5a; --mint:#62d3a5; --paper:#f4f6f1; --line:#d1dad4; --white:#fff; --soft:#e5eee9; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.65 Arial,Helvetica,sans-serif; }
+    header { background:var(--ink); color:white; padding:42px 20px; }
+    .wrap { width:min(1050px,calc(100% - 32px)); margin:0 auto; }
+    .eyebrow { margin:0 0 8px; color:var(--mint); font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }
+    h1 { margin:0; font-size:clamp(30px,5vw,46px); line-height:1.12; }
+    header p:last-child { max-width:780px; margin:16px 0 0; color:#dce7e2; }
+    nav { display:flex; flex-wrap:wrap; gap:10px 18px; padding:14px 0; border-bottom:1px solid var(--line); }
+    a { color:var(--green); font-weight:700; }
+    nav a { text-decoration:none; }
+    main { padding:18px 0 44px; }
+    section { margin:18px 0; padding:24px; background:var(--white); border:1px solid var(--line); }
+    h2 { margin:0 0 10px; font-size:25px; line-height:1.25; }
+    h3 { margin:20px 0 6px; font-size:18px; }
+    p { margin:8px 0 12px; }
+    .muted { color:var(--muted); }
+    .notice { border-left:4px solid var(--mint); background:var(--soft); padding:14px 16px; }
+    .flow { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin:18px 0; }
+    .flow div { min-height:112px; padding:12px; border-top:4px solid var(--mint); background:#f8faf8; }
+    .flow strong { display:block; color:var(--green); font-size:14px; }
+    .flow span { display:block; margin-top:6px; font-size:14px; }
+    table { width:100%; border-collapse:collapse; margin:12px 0; }
+    th,td { padding:10px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+    th { color:var(--green); }
+    code,pre { font-family:Consolas,"Courier New",monospace; }
+    code { padding:2px 5px; background:#edf1ee; }
+    pre { overflow:auto; padding:14px 16px; background:#142a32; color:#e8f2ed; border-radius:4px; line-height:1.55; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .model { padding:16px; border-top:4px solid var(--green); background:#f8faf8; }
+    .model h3 { margin:0 0 8px; }
+    .model p { margin:6px 0; }
+    .links { display:flex; flex-wrap:wrap; gap:10px 18px; }
+    footer { padding:20px 0 32px; color:var(--muted); font-size:13px; }
+    @media (max-width:760px) { .flow { grid-template-columns:1fr 1fr; } .grid { grid-template-columns:1fr; } section { padding:18px; } table { display:block; overflow-x:auto; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <p class="eyebrow">MomioLab · guía de código</p>
+      <h1>Cómo se construyó el prototipo</h1>
+      <p>Esta guía recorre el proyecto desde el CSV de Champions League hasta las probabilidades que aparecen en pantalla. Está pensada para abrirse junto con la carpeta en Visual Studio Code y explicar cada parte en clase.</p>
+    </div>
+  </header>
+  <div class="wrap">
+    <nav aria-label="Enlaces del proyecto">
+      <a href="index.html">Abrir la aplicación</a>
+      <a href="README.md">Instrucciones de ejecución</a>
+      <a href="data/SOURCES.md">Fuentes y cobertura</a>
+      <a href="presentacion/MomioLab_Champions_IA.pptx">Presentación</a>
+    </nav>
+    <main>
+      <section id="resumen">
+        <h2>La idea en una frase</h2>
+        <p class="notice"><strong>MomioLab aprende patrones de resultados anteriores de Champions League y estima tres probabilidades:</strong> gana el local, empate o gana el visitante.</p>
+        <div class="flow" aria-label="Flujo general del proyecto">
+          <div><strong>1 · Datos</strong><span>Marcadores del torneo, en orden de fecha.</span></div>
+          <div><strong>2 · Variables</strong><span>Forma reciente y duelos directos previos.</span></div>
+          <div><strong>3 · Entrenamiento</strong><span>Naive Bayes, Árbol o Random Forest.</span></div>
+          <div><strong>4 · Predicción</strong><span>Probabilidades para Local, Empate y Visitante.</span></div>
+          <div><strong>5 · Explicación</strong><span>Importancia, ruta del árbol y métricas.</span></div>
+        </div>
+        <p class="muted">Alcance fijo: UEFA Champions League y su antecesora directa, la Copa de Europa. La columna <code>competition</code> etiqueta las filas y el dashboard/CLI descarta todo lo que no tenga esa etiqueta.</p>
+      </section>
+
+      <section id="archivos">
+        <h2>Qué hace cada archivo</h2>
+        <table>
+          <thead><tr><th>Archivo</th><th>Responsabilidad</th><th>Qué puedes mostrar en VS Code</th></tr></thead>
+          <tbody>
+            <tr><td><a href="scripts/prepare-data.mjs">scripts/prepare-data.mjs</a></td><td>Lee los CSV de origen, filtra temporadas, normaliza nombres/fechas, quita duplicados y escribe el archivo común.</td><td>El proceso que transforma dos fuentes en un solo formato.</td></tr>
+            <tr><td><a href="data/champions_matches.csv">data/champions_matches.csv</a></td><td>Base consolidada. Tiene competición, fecha, temporada, ronda, local, visitante, goles y procedencia.</td><td>Una fila real que después usa el modelo.</td></tr>
+            <tr><td><a href="models.js">models.js</a></td><td>Prepara variables, entrena los algoritmos, predice, evalúa y genera explicaciones.</td><td>Las funciones <code>buildExamples</code>, <code>fitNaiveBayes</code>, <code>fitDecisionTree</code>, <code>fitRandomForest</code> y <code>evaluate</code>.</td></tr>
+            <tr><td><a href="app.js">app.js</a></td><td>Lee el CSV, llena los selectores y actualiza la página con probabilidades, importancia e historial.</td><td>La función <code>start</code> y luego <code>renderPrediction</code>.</td></tr>
+            <tr><td><a href="index.html">index.html</a> + <a href="styles.css">styles.css</a></td><td>El HTML define secciones y controles; el CSS determina su presentación visual.</td><td>La interfaz que abre el navegador.</td></tr>
+            <tr><td><a href="cli.mjs">cli.mjs</a></td><td>Corre una demostración sin navegador e imprime las probabilidades en la terminal.</td><td>La entrada del programa, el modelo seleccionado y la salida 1X2.</td></tr>
+            <tr><td><a href="server.mjs">server.mjs</a></td><td>Sirve los archivos locales con Node.js para que el navegador pueda cargar módulos y CSV.</td><td>La ruta que recibe la página y entrega el archivo solicitado.</td></tr>
+            <tr><td><a href=".vscode/tasks.json">.vscode/tasks.json</a> + <a href="package.json">package.json</a></td><td>Definen tareas rápidas y comandos como <code>npm start</code> y <code>npm run demo</code>.</td><td>Cómo lanzar el proyecto desde la terminal integrada.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="datos">
+        <h2>1. Preparar los partidos</h2>
+        <p>Los archivos originales tienen columnas y formatos distintos. <code>prepare-data.mjs</code> los lee, conserva resultados terminados, convierte marcadores a números, normaliza la fecha y el equipo local/visitante, añade la etiqueta de competición y elimina filas duplicadas.</p>
+        <p>El resultado es <code>data/champions_matches.csv</code>, que ambos caminos de ejecución usan: la interfaz web y la demostración de terminal. La aplicación vuelve a revisar la etiqueta antes de entrenar; así, una fila de otro torneo no se incorpora por accidente.</p>
+        <pre><code>competencia | fecha | temporada | local | visitante | goles local | goles visitante
+Champions   | ...   | ...       | ...   | ...       | ...         | ...</code></pre>
+        <p class="muted">La cobertura y las limitaciones de las fuentes están en <a href="data/SOURCES.md">data/SOURCES.md</a>. El conjunto reciente puede no incluir rondas clasificatorias.</p>
+      </section>
+
+      <section id="variables">
+        <h2>2. Convertir marcadores a variables</h2>
+        <p>Los modelos no comparan nombres de equipos directamente. Primero <code>buildExamples</code> convierte la historia previa en 12 números y guarda el resultado final como clase objetivo. Para un partido gana el local, el objetivo es <code>Local</code>; para un empate, <code>Empate</code>; y para una victoria visitante, <code>Visitante</code>.</p>
+        <table>
+          <thead><tr><th>Grupo</th><th>Qué mide</th><th>Ejemplo</th></tr></thead>
+          <tbody>
+            <tr><td>Forma del local</td><td>Puntos, goles a favor/en contra, diferencia de goles y proporción de victorias en sus últimos cinco partidos.</td><td>Promedio de puntos por partido.</td></tr>
+            <tr><td>Forma del visitante</td><td>Las mismas medidas, calculadas para el club visitante.</td><td>Goles recibidos por partido.</td></tr>
+            <tr><td>Enfrentamientos directos</td><td>Diferencia de puntos y goles en hasta cinco duelos anteriores de estos dos clubes.</td><td>Puntos del local menos puntos del visitante.</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Orden temporal:</strong> antes de agregar el resultado de una fecha a los historiales, el código calcula las variables de todos los partidos de esa fecha. Así un partido no “ve” el marcador de otro que ocurrió el mismo día.</p>
+      </section>
+
+      <section id="algoritmos">
+        <h2>3. Cómo aprende cada algoritmo</h2>
+        <div class="grid">
+          <article class="model">
+            <h3>Naive Bayes Gaussiano</h3>
+            <p>En <code>fitNaiveBayes</code> calcula la frecuencia, media y varianza de cada variable dentro de Local, Empate y Visitante.</p>
+            <p>Para predecir combina la probabilidad previa de cada clase con qué tan compatibles son las variables observadas.</p>
+            <pre><code>P(clase | variables) ∝ P(clase) × Π P(variable | clase)</code></pre>
+            <p class="muted">Supone que las variables son independientes entre sí, dado el resultado.</p>
+          </article>
+          <article class="model">
+            <h3>Árbol de decisión</h3>
+            <p><code>bestSplit</code> prueba umbrales; <code>gini</code> mide si un grupo mezcla muchos resultados o contiene principalmente una clase.</p>
+            <p><code>buildTree</code> crea preguntas y ramas. <code>explainTree</code> devuelve la ruta que siguió un partido.</p>
+            <pre><code>Gini = 1 − Σ proporción(clase)²</code></pre>
+            <p class="muted">La hoja convierte los conteos de Local/Empate/Visitante en probabilidades.</p>
+          </article>
+          <article class="model">
+            <h3>Random Forest</h3>
+            <p><code>fitRandomForest</code> genera 17 árboles. Cada uno recibe una muestra con reemplazo y considera un subconjunto de variables por corte.</p>
+            <p><code>predictRandomForest</code> promedia las probabilidades de los árboles.</p>
+            <pre><code>predicción del bosque = promedio de votos</code></pre>
+            <p class="muted">La importancia combina la reducción de Gini de todos sus árboles.</p>
+          </article>
+        </div>
+        <p class="notice"><strong>Importancia no significa causa.</strong> Las barras describen asociaciones aprendidas por el modelo. La estimación de Naive Bayes se calcula de forma distinta a la importancia Gini de los árboles.</p>
+      </section>
+
+      <section id="evaluacion">
+        <h2>4. Cómo se compara el desempeño</h2>
+        <p>Los ejemplos válidos se mantienen en orden cronológico. El 80% más antiguo sirve para entrenar y el bloque posterior para evaluar; los partidos de una misma fecha no se separan entre bloques. Después, el dashboard vuelve a entrenar cada modelo con todos los ejemplos para su selector interactivo.</p>
+        <table>
+          <thead><tr><th>Métrica</th><th>Lectura sencilla</th><th>Dirección deseada</th></tr></thead>
+          <tbody>
+            <tr><td>Accuracy</td><td>Proporción de partidos donde la clase con más probabilidad fue la clase real.</td><td>Más alta</td></tr>
+            <tr><td>Log loss</td><td>Penaliza predicciones muy seguras cuando el resultado real tenía poca probabilidad.</td><td>Más baja</td></tr>
+            <tr><td>Brier</td><td>Compara las tres probabilidades estimadas con el resultado observado.</td><td>Más baja</td></tr>
+          </tbody>
+        </table>
+        <p class="muted">La evaluación usa resultados pasados; no es una prueba de que el modelo pueda anticipar alineaciones, lesiones o cambios de forma actuales.</p>
+      </section>
+
+      <section id="presentacion">
+        <h2>5. Cómo se preparó la presentación</h2>
+        <p>La presentación en PowerPoint resume el mismo alcance de Champions, las variables y los tres algoritmos. Las cifras de evaluación y el ejemplo de Real Madrid vs Bayern se calcularon a partir del CSV del proyecto; las barras y diagramas quedaron como elementos editables en las diapositivas. Las fuentes están en las notas del presentador y en la última diapositiva.</p>
+        <p><a href="presentacion/MomioLab_Champions_IA.pptx">Abrir la presentación editable de 10 diapositivas</a></p>
+      </section>
+
+      <section id="salida">
+        <h2>6. Qué pasa cuando eliges dos clubes</h2>
+        <ol>
+          <li><code>app.js</code> lee los valores de los selectores de local, visitante y modelo.</li>
+          <li><code>upcomingFeatures</code> resume el historial que existe en el CSV para esos dos clubes.</li>
+          <li><code>predict</code> devuelve tres probabilidades y la interfaz marca la más alta.</li>
+          <li>Se ordena la importancia de variables y se crea una explicación específica: contribuciones de Naive Bayes, ruta del árbol o resumen del bosque.</li>
+          <li>El momio decimal mostrado es <code>1 / probabilidad</code>. Es una conversión matemática sin margen comercial.</li>
+        </ol>
+        <p>El historial directo y los últimos resultados se agregan debajo para que puedas contrastar la salida con los datos que conoce el prototipo.</p>
+      </section>
+
+      <section id="ejecutar">
+        <h2>7. Cómo demostrarlo en VS Code</h2>
+        <p>Abre la carpeta <code>MomioLab_Champions_IA</code>. La app se ejecuta en el servidor local y el ejemplo imprime los pasos del algoritmo en la terminal.</p>
+        <pre><code>npm start
+# abre http://127.0.0.1:4180
+
+npm run demo -- "Real Madrid CF" "FC Bayern München" naiveBayes
+npm run demo -- "Real Madrid CF" "FC Bayern München" decisionTree
+npm run demo -- "Real Madrid CF" "FC Bayern München" randomForest</code></pre>
+        <p>En VS Code también puedes abrir <strong>Terminal → Ejecutar tarea</strong> y elegir el dashboard o la demostración de Naive Bayes. El servidor <code>server.mjs</code> sirve el HTML, CSS, JavaScript, CSV y esta guía.</p>
+      </section>
+
+      <section id="exposicion-facil">
+        <h2>Guion fácil para presentar el boceto</h2>
+        <ol>
+          <li><strong>Problema:</strong> queremos estimar Local, Empate o Visitante con resultados anteriores de Champions.</li>
+          <li><strong>Entrada:</strong> elige Real Madrid y Bayern, y deja Naive Bayes como primer modelo.</li>
+          <li><strong>Qué analiza:</strong> últimos cinco partidos, goles, puntos y duelos directos previos.</li>
+          <li><strong>Salida:</strong> compara las tres probabilidades; el porcentaje más alto es el resultado estimado por el modelo.</li>
+          <li><strong>Explicación:</strong> muestra las variables que separan el resultado sugerido. Después, cambia a Árbol o Random Forest para comparar enfoques.</li>
+        </ol>
+        <p>Pulsa <strong>Mostrar todo el proyecto</strong> para abrir el historial, la tabla de métricas y los siguientes pasos. El modo sencillo solo oculta esos detalles durante la primera explicación; los tres algoritmos siguen funcionando.</p>
+      </section>
+
+      <section id="limitaciones">
+        <h2>Qué falta para una siguiente versión</h2>
+        <p>El prototipo aún no conoce alineaciones, lesiones, minutos de los jugadores ni cuotas reales. Para añadir esos factores se necesita una fuente compatible por partido y fecha. Monte Carlo y máxima entropía quedan como extensiones; los tres modelos principales ya funcionan en la entrega actual.</p>
+        <p>Al presentar el resultado, conviene llamarlo <strong>estimación académica basada en historial</strong>, no garantía de marcador ni recomendación de apuesta.</p>
+      </section>
+
+      <section>
+        <h2>Archivos para continuar leyendo</h2>
+        <div class="links">
+          <a href="models.js">Modelos y variables</a>
+          <a href="app.js">Interfaz y renderizado</a>
+          <a href="cli.mjs">Demostración en terminal</a>
+          <a href="scripts/prepare-data.mjs">Preparación del CSV</a>
+          <a href="data/SOURCES.md">Fuentes de partidos</a>
+          <a href="README.md">README del proyecto</a>
+        </div>
+      </section>
+    </main>
+    <footer>MomioLab Champions IA · guía local de implementación para usar junto con Visual Studio Code.</footer>
+  </div>
+</body>
+</html>

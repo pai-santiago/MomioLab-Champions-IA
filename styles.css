@@ -1,0 +1,73 @@
+/* Estilos sencillos para que el contenido y el funcionamiento del algoritmo sean lo principal. */
+/* 1. Base: modelo de caja, tipografía, fondo y ancho común. */
+* { box-sizing: border-box; }
+:root { font-family: Arial, Helvetica, sans-serif; color: #20252b; background: #f3f4f6; }
+body { margin: 0; line-height: 1.5; }
+.page-width { width: min(1080px, calc(100% - 32px)); margin: 0 auto; }
+.site-header { padding: 28px 0 25px; background: #fff; border-bottom: 1px solid #d6d9dd; }
+.course-label { margin: 0 0 5px; color: #4d5964; font-size: 12px; font-weight: bold; }
+h1 { margin: 0; font-size: 34px; }
+.subtitle { margin: 7px 0 0; color: #5e6872; }
+main { padding-top: 18px; }
+/* 2. Secciones y jerarquía de títulos. */
+.section-block { margin: 16px 0; padding: 18px; background: #fff; border: 1px solid #d9dde1; }
+h2 { margin: 0 0 6px; font-size: 22px; }
+h3 { margin: 14px 0 8px; font-size: 16px; }
+.section-intro { margin: 0 0 16px; color: #606a74; }
+.number-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.number-item { padding: 12px; border: 1px solid #e0e3e6; background: #fafafa; }
+.number-item strong { display: block; font-size: 23px; }
+.number-item span { display: block; color: #69737d; font-size: 13px; }
+.two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 12px; }
+.bar-list { display: grid; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: minmax(185px, 1.4fr) minmax(100px, 2fr) 58px; align-items: center; gap: 9px; font-size: 13px; }
+.bar-label { overflow-wrap: anywhere; }
+.bar-track { height: 13px; background: #e8eaed; }
+.bar-fill { height: 100%; background: #5f7894; }
+.bar-value { text-align: right; font-variant-numeric: tabular-nums; }
+.simple-list { margin: 0; padding-left: 20px; }
+.simple-list li { margin: 4px 0; }
+/* 3. Controles de selección, predicción, importancia y explicaciones. */
+.controls { display: grid; grid-template-columns: 1fr 1fr 1fr auto; align-items: end; gap: 12px; }
+.controls label { display: grid; gap: 5px; font-size: 13px; font-weight: bold; }
+select, button { min-height: 38px; border: 1px solid #adb5bd; background: #fff; color: #20252b; padding: 7px 9px; font: inherit; }
+button { background: #e6ebef; cursor: pointer; font-weight: bold; }
+button:hover { background: #d7e0e7; }
+.prediction-output { margin-top: 17px; }
+.prediction-title { margin: 0 0 12px; font-size: 18px; }
+.prediction-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.prediction-card { padding: 12px; border: 1px solid #d9dde1; background: #fafafa; }
+.prediction-card strong { display: block; font-size: 22px; }
+.prediction-card span { color: #606a74; font-size: 13px; }
+.prediction-card .bar-track { margin: 9px 0 7px; }
+.explanation { margin-top: 14px; padding: 13px; background: #f5f6f7; border-left: 3px solid #5f7894; }
+.explanation p { margin: 5px 0; }
+.form-card { padding: 12px; border: 1px solid #e0e3e6; }
+.form-card h3 { margin-top: 0; }
+.form-card p { margin: 5px 0; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 8px; text-align: left; border-bottom: 1px solid #e2e5e8; }
+th { background: #f6f7f8; }
+.small-note { margin: 12px 0 0; color: #626d77; font-size: 12px; }
+.inline-error, .error { color: #8a2727; }
+.notice { margin: 15px 0; padding: 12px; border: 1px solid #d6d9dd; background: #fff; }
+.mode-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 16px 0; padding: 12px 16px; border-left: 4px solid #62d3a5; background: #fff; }
+.mode-toolbar strong, .mode-toolbar span { display: block; }
+.mode-toolbar span { color: #626d77; font-size: 13px; }
+.simple-mode .advanced-section { display: none; }
+.error { border-color: #d8a1a1; background: #fff6f6; }
+.next-step ul { margin: 8px 0 0; padding-left: 22px; }
+.next-step li { margin: 5px 0; }
+/* 4. Pie de página y adaptación a pantallas angostas. */
+.footer { padding: 12px 0 25px; color: #68727c; font-size: 12px; }
+.footer a { color: #385b7c; }
+@media (max-width: 760px) {
+  .number-row { grid-template-columns: repeat(2, 1fr); }
+  .two-columns { grid-template-columns: 1fr; }
+  .controls { grid-template-columns: 1fr 1fr; }
+  .controls button { grid-column: 1 / -1; }
+  .prediction-grid { grid-template-columns: 1fr; }
+  .bar-row { grid-template-columns: minmax(130px, 1.1fr) minmax(70px, 1fr) 52px; }
+  .mode-toolbar { align-items: stretch; flex-direction: column; }
+}

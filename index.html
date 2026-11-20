@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Prototipo académico para explicar modelos de IA con resultados de Champions League.">
+  <title>Champions Lab | MomioLab</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <!-- Encabezado del prototipo; los datos y cálculos se cargan desde app.js. -->
+  <header class="site-header">
+    <div class="page-width">
+      <p class="course-label">PROYECTO DE INTELIGENCIA ARTIFICIAL · UEFA CHAMPIONS LEAGUE</p>
+      <h1>Champions Lab</h1>
+      <p class="subtitle">¿Qué pasó en los partidos y qué señales usa el modelo para predecir el siguiente resultado?</p>
+    </div>
+  </header>
+
+  <!-- Las secciones siguientes muestran resúmenes que app.js llena con el CSV. -->
+  <main class="page-width">
+    <div id="loading" class="notice">Cargando resultados y preparando los tres modelos…</div>
+    <div id="error" class="notice error" hidden></div>
+
+    <div id="app" hidden>
+      <div class="mode-toolbar">
+        <div>
+          <strong id="mode-title">Modo sencillo de exposición</strong>
+          <span id="mode-description">Resumen de Champions, predicción y explicación de variables.</span>
+        </div>
+        <button id="mode-toggle" type="button" aria-pressed="true">Mostrar todo el proyecto</button>
+      </div>
+
+      <!-- Indicadores agregados del historial y distribución de resultados 1X2. -->
+      <section id="historical-overview" class="section-block">
+        <h2>1. ¿Qué pasó históricamente?</h2>
+        <p class="section-intro">Solo partidos de la UEFA Champions League y su antecesora, la Copa de Europa. No se mezclan ligas nacionales ni otras copas UEFA.</p>
+        <div id="overview-numbers" class="number-row"></div>
+        <div class="two-columns">
+          <div>
+            <h3>Resultados registrados</h3>
+            <div id="historical-outcomes" class="bar-list"></div>
+          </div>
+          <div>
+            <h3>Clubes con más victorias</h3>
+            <div id="top-clubs" class="simple-list"></div>
+          </div>
+        </div>
+        <p id="data-source-note" class="small-note"></p>
+      </section>
+
+      <!-- Controles de selección para elegir clubes y algoritmo. -->
+      <section id="match-prediction" class="section-block">
+        <h2>2. Elige los dos equipos y un modelo</h2>
+        <p class="section-intro">La predicción usa resultados anteriores a la fecha de corte del archivo. No usa jugadores ni alineaciones.</p>
+        <div class="controls">
+          <label>Equipo local
+            <select id="home-team"></select>
+          </label>
+          <label>Equipo visitante
+            <select id="away-team"></select>
+          </label>
+          <label>Algoritmo
+            <select id="model-choice">
+              <option value="naiveBayes">Naive Bayes</option>
+              <option value="decisionTree">Árbol de decisión</option>
+              <option value="randomForest">Random Forest</option>
+            </select>
+          </label>
+          <button id="predict-button" type="button">Analizar y predecir</button>
+        </div>
+        <p id="prediction-error" class="inline-error" hidden></p>
+        <div id="prediction-output" class="prediction-output"></div>
+      </section>
+
+      <!-- Importancia de variables y explicación del algoritmo seleccionado. -->
+      <section id="feature-explanation" class="section-block">
+        <h2>3. ¿Qué variables tomó en cuenta?</h2>
+        <p class="section-intro">Importancia estimada por el modelo seleccionado. Importancia indica asociación dentro del modelo, no causa.</p>
+        <div id="importance-list" class="bar-list"></div>
+        <div id="model-explanation" class="explanation"></div>
+        <p class="small-note">La importancia de Naive Bayes usa separación entre clases; los árboles usan reducción de impureza. No compares sus porcentajes como si fueran la misma medida.</p>
+      </section>
+
+      <!-- Forma reciente y tabla de duelos directos entre los dos clubes. -->
+      <section id="head-to-head-history" class="section-block advanced-section">
+        <h2>4. Revisión del historial entre los equipos</h2>
+        <div id="team-form" class="two-columns"></div>
+        <h3>Enfrentamientos directos más recientes</h3>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Fecha</th><th>Local</th><th>Marcador</th><th>Visitante</th><th>Temporada</th></tr></thead>
+            <tbody id="head-to-head"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Comparación de métricas en un bloque cronológico de prueba. -->
+      <section id="model-metrics" class="section-block advanced-section">
+        <h2>5. ¿Cómo se comportan los modelos?</h2>
+        <p class="section-intro">Evaluación cronológica: se entrena con los partidos anteriores y se mide en el 20% más reciente.</p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Modelo</th><th>Accuracy</th><th>Log loss ↓</th><th>Brier ↓</th></tr></thead>
+            <tbody id="metrics-table"></tbody>
+          </table>
+        </div>
+        <p id="validation-note" class="small-note"></p>
+      </section>
+
+      <section id="future-work" class="section-block next-step advanced-section">
+        <h2>Para una siguiente fase</h2>
+        <ul>
+          <li>Jugadores disponibles o ausentes: requiere una base confiable de alineaciones y minutos.</li>
+          <li>Monte Carlo y máxima entropía: mejoras posteriores, fuera de este primer boceto.</li>
+          <li>Temporada 2026–27: cargar resultados actualizados cuando exista un archivo histórico completo.</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="page-width footer">
+    <p>Prototipo académico. Los modelos identifican patrones estadísticos, no explican causalidad ni garantizan resultados.</p>
+    <a href="explicacion_codigo.html">Cómo se hizo el proyecto: guía del código</a>
+    <span> · </span>
+    <a href="data/SOURCES.md" target="_blank" rel="noreferrer">Fuentes y cobertura de datos</a>
+  </footer>
+</body>
+</html>

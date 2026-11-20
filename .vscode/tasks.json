@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "MomioLab: abrir el dashboard",
+      "type": "shell",
+      "command": "npm start",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "focus": true }
+    },
+    {
+      "label": "MomioLab: demostrar Naive Bayes en terminal",
+      "type": "shell",
+      "command": "npm run demo -- \"Real Madrid CF\" \"FC Bayern München\" naiveBayes",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "focus": true }
+    }
+  ]
+}

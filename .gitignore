@@ -1,0 +1,6 @@
+# Archivos de compilación temporal de la presentación; el PPTX final está en presentacion/.
+.presentation-build/
+
+# Dependencias locales y logs de ejecución.
+node_modules/
+*.log
