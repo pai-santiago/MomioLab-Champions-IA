@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Prototipo académico para explicar modelos de IA con resultados de Champions League.">
   <title>Champions Lab | MomioLab</title>
-  <link rel="stylesheet" href="styles.css">
-  <script type="module" src="app.js"></script>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
 </head>
 <body>
-  <!-- Encabezado del prototipo; los datos y cálculos se cargan desde app.js. -->
+  <!-- Encabezado del prototipo; app.js consulta los datos y cálculos del servidor Python. -->
   <header class="site-header">
     <div class="page-width">
       <p class="course-label">PROYECTO DE INTELIGENCIA ARTIFICIAL · UEFA CHAMPIONS LEAGUE</p>
@@ -18,9 +18,9 @@
     </div>
   </header>
 
-  <!-- Las secciones siguientes muestran resúmenes que app.js llena con el CSV. -->
+  <!-- Las secciones siguientes muestran resúmenes que app.js llena con la respuesta de Python. -->
   <main class="page-width">
-    <div id="loading" class="notice">Cargando resultados y preparando los tres modelos…</div>
+    <div id="loading" class="notice">Conectando con Python y preparando Naive Bayes y Random Forest…</div>
     <div id="error" class="notice error" hidden></div>
 
     <div id="app" hidden>
@@ -64,7 +64,6 @@
           <label>Algoritmo
             <select id="model-choice">
               <option value="naiveBayes">Naive Bayes</option>
-              <option value="decisionTree">Árbol de decisión</option>
               <option value="randomForest">Random Forest</option>
             </select>
           </label>
@@ -80,7 +79,7 @@
         <p class="section-intro">Importancia estimada por el modelo seleccionado. Importancia indica asociación dentro del modelo, no causa.</p>
         <div id="importance-list" class="bar-list"></div>
         <div id="model-explanation" class="explanation"></div>
-        <p class="small-note">La importancia de Naive Bayes usa separación entre clases; los árboles usan reducción de impureza. No compares sus porcentajes como si fueran la misma medida.</p>
+        <p class="small-note">Naive Bayes ordena variables por separación entre resultados; Random Forest usa reducción de impureza Gini. Son medidas distintas.</p>
       </section>
 
       <!-- Forma reciente y tabla de duelos directos entre los dos clubes. -->
@@ -122,9 +121,9 @@
 
   <footer class="page-width footer">
     <p>Prototipo académico. Los modelos identifican patrones estadísticos, no explican causalidad ni garantizan resultados.</p>
-    <a href="explicacion_codigo.html">Cómo se hizo el proyecto: guía del código</a>
+    <a href="/explicacion_codigo.html">Cómo se hizo el proyecto: guía del código</a>
     <span> · </span>
-    <a href="data/SOURCES.md" target="_blank" rel="noreferrer">Fuentes y cobertura de datos</a>
+    <a href="/FUENTES.md" target="_blank" rel="noreferrer">Fuentes y cobertura de datos</a>
   </footer>
 </body>
 </html>

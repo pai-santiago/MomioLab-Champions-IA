@@ -1,12 +1,12 @@
 # Fuentes, cobertura y licencias
 
-El archivo procesado [`champions_matches.csv`](champions_matches.csv) contiene partidos normalizados y una columna `competition` fija: `UEFA Champions League / Copa de Europa`. Las dos fuentes son específicas de esta competición y su antecesora histórica; el proyecto no combina partidos de ligas nacionales, Europa League, Conference League ni otras copas.
+El archivo procesado [`champions_matches.csv`](champions_matches.csv) está en la raíz del proyecto. Contiene partidos normalizados y una columna `competition` fija: `UEFA Champions League / Copa de Europa`. Las dos fuentes son específicas de esta competición y su antecesora histórica; el proyecto no combina partidos de ligas nacionales, Europa League, Conference League ni otras copas.
 
 ## Fuente histórica: 1955–56 a 2021–22
 
 - Proyecto: [CharlieGnomo/champions_uefa_data](https://github.com/CharlieGnomo/champions_uefa_data), que describe su conjunto como datos extraídos de UEFA Champions League para las temporadas 1955–56 a 2021–22.
 - Archivo original: [matches.csv](https://raw.githubusercontent.com/CharlieGnomo/champions_uefa_data/master/matches.csv)
-- Licencia declarada por el repositorio: Apache License 2.0. Se adjunta una copia en `data/source/LICENSE-legacy-source.txt`.
+- Licencia declarada por el repositorio: Apache License 2.0. Se adjunta una copia en `pagina/referencias/LICENSE-legacy-source.txt`.
 - Cobertura usada: partidos de temporadas hasta 2021–22 inclusive.
 
 ## Fuente reciente: 2022–23 a 2025–26
@@ -19,7 +19,7 @@ El archivo procesado [`champions_matches.csv`](champions_matches.csv) contiene p
 
 ## Transformación
 
-`scripts/prepare-data.mjs` transforma las columnas de ambas fuentes a un esquema común, etiqueta cada registro con `UEFA Champions League / Copa de Europa`, usa el marcador final registrado en cada origen, elimina el solapamiento de temporadas y ordena por fecha. La aplicación y la demostración de terminal filtran por esa etiqueta antes de analizar. Los CSV originales se conservan en `data/source/` para repetir el proceso.
+El archivo consolidado ya está preparado para que la demostración sea sencilla: las columnas de ambas fuentes se normalizaron, se etiquetaron como `UEFA Champions League / Copa de Europa`, se eliminaron las temporadas duplicadas y se ordenaron por fecha. La aplicación y la demostración de terminal revisan esa etiqueta antes de analizar. La entrega local conserva la base final y esta documentación de procedencia.
 
 ## Uso académico
 

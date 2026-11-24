@@ -1,6 +1,10 @@
-# Archivos de compilación temporal de la presentación; el PPTX final está en presentacion/.
+# Archivos de compilación temporal de la presentación; el PPTX final está dentro de pagina/.
 .presentation-build/
 
 # Dependencias locales y logs de ejecución.
 node_modules/
 *.log
+
+# Caché que Python puede crear al ejecutar el proyecto.
+__pycache__/
+*.py[cod]
